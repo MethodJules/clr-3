@@ -1,0 +1,33 @@
+
+#navigation li {
+    list-style-type: none;
+}
+
+#seitenNav {
+    background-color: white; /* Based on screendesign */
+    border: none;
+    color: black;
+    border: none;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 5px;
+    width: 120px;
+    font-size: larger !important;
+    font-weight: bold;
+
+    width: 85% !important;
+  }
+
+  #seitenNav:hover, #seitenNav:active {
+    background-color: #e93c51;
+    color: white;
+    border: none;
+  }
+
+  #nav_elemente {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }

@@ -36,3 +36,22 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+#main {
+  background-image: url('../src/assets/images/resized_background.jpg');
+  background-size: cover;
+  background-position: 'center';
+}
+
+#middleButton {
+  width: 80px !important;
+  height: 25px !important;
+}
+
+#smallButton, #middleButton, #smalladdButton {
+  background-color: #c93e37 !important;
+  border: none;
+  color: white;
+}
