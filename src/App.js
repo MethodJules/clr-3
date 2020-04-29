@@ -17,15 +17,15 @@ const initialConceptMap = [
     {
       nodes:[
         {
-          conceptID: 1,
+          id: 1,
           conceptName: 'Concept 1',
         },
         {
-          conceptID: 2,
+          id: 2,
           conceptName: 'Concept 2'
         },
         {
-          conceptID: 3,
+          id: 3,
           conceptName: 'Concept 3'
         }
       ],
@@ -39,41 +39,26 @@ const initialConceptMap = [
       ]
     }
 ];
-  /*
-  {
-    conceptID: 1,
-    conceptName: 'Concept 1',
-    source: 1,
-    target: 2,
-  },
-  {
-    conceptID: 2,
-    conceptName: 'Concept 2',
-    source: 1,
-    target: 3,
-  },
-  {
-    conceptID: 3,
-    conceptName: 'Concept 3',
-    source: null,
-    target: null,
-  },
-  */
 
 
 const initialAllConcepts = [
   {
-    conceptID: 5,
-    conceptName: 'Concept 5',
-  },
-  {
-    conceptID: 6,
-    conceptName: 'Concept 6',
-  },
-  {
-    conceptID: 7,
-    conceptName: 'Concept 7',
-  },
+    nodes:[
+      {
+        id: 4,
+        conceptName: 'Concept 4',
+      },
+      {
+        id: 5,
+        conceptName: 'Concept 5'
+      },
+      {
+        id: 6,
+        conceptName: 'Concept 6'
+      }
+    ],
+    links: [],
+  }
 ];
 
 
@@ -91,29 +76,34 @@ const App = () => {
   const [allConcepts, setAllConcepts] = React.useState(initialAllConcepts);
 
   /* Concept */
-  //const [isInConceptMap, setIsInConceptMap] = React.useState(true);
-
   const handleConceptAdd = (item) => {
-    console.log(conceptMap);
-
-    const newConcept = {
-      conceptID: item.conceptID,
-      conceptName: item.conceptName
+    console.log('handleConceptAdd....');
+    //console.log(item);
+    let newConcept = {
+        id: item.id,
+        conceptName: item.conceptName
     };
 
-    setConceptMap(conceptMap.concat(newConcept)); //concat ist hier die Loesung statt array.push()
-    handleConceptListRemove(item);
+    //setConceptMap(conceptMap.concat(newConcept));
+
+    console.log(conceptMap[0].nodes);
+    console.log(typeof conceptMap[0].nodes);
+    setConceptMap({nodes: {id: 10, conceptName: 'dddd'}});
+    console.log(conceptMap);
+    //setConceptMap(conceptMap[0].nodes.concat(newConcept));
+    //setConceptMap(conceptMap.concat(newConcept)); //concat ist hier die Loesung statt array.push()
+    //handleConceptListRemove(item);
   }
 
   const handleConceptRemove = (item) => {
     console.log('Remove...');
     console.log(conceptMap);
     const newConceptMap = conceptMap.filter(
-      concept => item.conceptID !== concept.conceptID
+      concept => item.id !== concept.id
     );
 
     setConceptMap(newConceptMap);
-    console.log(conceptMap);
+    //console.log(conceptMap);
     handleConceptListAdd(item);
 
   }
@@ -121,7 +111,7 @@ const App = () => {
   const handleConceptListAdd = (item) => {
     console.log('Adding...');
     const newConceptList = {
-      conceptID: item.conceptID,
+      id: item.id,
       conceptName: item.conceptName
     }
 
@@ -132,7 +122,7 @@ const App = () => {
     console.log('Remove...');
     console.log(allConcepts);
     const newAllConcepts = allConcepts.filter(
-      concept => item.conceptID !== concept.conceptID
+      concept => item.id !== concept.id
     );
 
     setAllConcepts(newAllConcepts);
@@ -141,7 +131,7 @@ const App = () => {
 
   const handleSaveConcept = () => {
     const newConcept = {
-      conceptID: 4,
+      id: 4,
       conceptName: 'Concept 4',
       isRelatedTo: 1,
     };
@@ -167,7 +157,7 @@ const App = () => {
       <Container fluid>
         <Row style={style}>
           <Col>
-            <button type="button" onClick={handleConceptAdd}>Concept hinzufügen</button>
+            <button type="button" onClick={handleConceptAdd}>Concept hinzufügen</button> {/*TODO: Methode anpassen */}
             <Button variant="primary" onClick={handleShow}>Create Concept</Button>
             <ConceptList concepts={allConcepts} onRemoveConcept={handleConceptListRemove} handleConceptAdd={handleConceptAdd} isInConceptMap={false} />
             <CreateRelationshipForm />
@@ -175,7 +165,7 @@ const App = () => {
           <Col xs={8} style={styleConceptMapContainer}>
           <MyGraph conceptMap={conceptMap}/>
 
-            <ConceptMap concepts={conceptMap} onRemoveConcept={handleConceptRemove} isInConceptMap={true}/>
+            {/* <ConceptMap concepts={conceptMap} onRemoveConcept={handleConceptRemove} isInConceptMap={true}/> */}
             <CreateConceptModal show={show} handleClose={handleClose} handleShow={handleShow} handleSaveConcept={handleSaveConcept}/>
           </Col>
           <Col>
@@ -190,8 +180,10 @@ const App = () => {
   );
 }
 
-const ConceptList = ({concepts, onRemoveConcept, handleConceptAdd, isInConceptMap}) =>
-  concepts.map(item => <Concept key={item.conceptID} concept={item} onRemoveConcept={onRemoveConcept} handleConceptAdd={handleConceptAdd} isInConceptMap={isInConceptMap} />);
+const ConceptList = ({concepts, onRemoveConcept, handleConceptAdd, isInConceptMap}) => {
+    return concepts[0].nodes.map((item) => <Concept key={item.id} concept={item} onRemoveConcept={onRemoveConcept}
+              handleConceptAdd={handleConceptAdd} isInConceptMap={isInConceptMap} />);
+}
 
 
 const Concept = ({concept, onRemoveConcept, handleConceptAdd, isInConceptMap}) => {
@@ -208,8 +200,6 @@ const Concept = ({concept, onRemoveConcept, handleConceptAdd, isInConceptMap}) =
     borderStyle: 'dotted',
     borderColor: 'purple'
   }
-
-
 
   return(
     <div style={styleButtonGroup}>
@@ -314,41 +304,25 @@ const CreateRelationshipForm = () => {
 
 
 const MyGraph = ({conceptMap}) => {
-
-  let nodes = [];
-  let links = [];
-  //conceptMap.forEach((item) => nodes.push({id:  item.nodes.conceptID, name: item.nodes.conceptName}));
-  conceptMap.forEach((item) => console.log(item));
-  //conceptMap.forEach((item) => links.push({source: item.links.source, target: item.links.target}));
-
-  console.log(nodes);
-  console.log(links);
-
-  //Cut last element of links
-  //links.splice(-1,1);
-  /* graph */
-  // graph payload (with minimalist structure)
-const data = {
-  nodes: [{ id: "Harry" }, { id: "Sally" }, { id: "Alice" }],
-  //nodes: nodes,
-  links: [{ source: 1, target: 2 }, { source: 1, target: 3 }],
-  //links: links,
+  const data = {
+    nodes: conceptMap[0].nodes,
+    links: conceptMap[0].links,
 };
 
-// the graph configuration, you only need to pass down properties
-// that you want to override, otherwise default ones will be used
-const myConfig = {
-  nodeHighlightBehavior: true,
-  node: {
-      color: "lightgreen",
-      size: 120,
-      highlightStrokeColor: "blue",
-      labelProperty: "name"
-  },
-  link: {
-      highlightColor: "lightblue",
-  },
-};
+  // the graph configuration, you only need to pass down properties
+  // that you want to override, otherwise default ones will be used
+  const myConfig = {
+    nodeHighlightBehavior: true,
+    node: {
+        color: "lightgreen",
+        size: 600,
+        highlightStrokeColor: "blue",
+        labelProperty: "conceptName"
+    },
+    link: {
+        highlightColor: "lightblue",
+    },
+  };
   return(
     <Graph id="graph-id" data={data} config={myConfig} />
   );
