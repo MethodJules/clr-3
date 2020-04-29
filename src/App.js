@@ -80,19 +80,11 @@ const App = () => {
   /* Concept */
   const handleConceptAdd = (item) => {
     console.log('handleConceptAdd....');
-    //console.log(conceptMap);
-    //console.log(item);
-
-    const nodes = conceptMap[0].nodes;
-    //console.log(typeof nodes);
-    const node = {id: item.id, conceptName: item.conceptName};
-    const newNodes = {...nodes.concat(node)};
-    //console.log(newNodes);
-    const newConceptMap = [{nodes: newNodes, links: conceptMap[0].links}];
-
-    console.log(newConceptMap);
-    //setConceptMap(newConceptMap);
-    //setConceptMap(conceptMap.concat(newConcept)); //concat ist hier die Loesung statt array.push()
+    const nodes = conceptMap[0].nodes; //Hole die Nodes aus der Concept Map
+    const node = {id: item.id, conceptName: item.conceptName}; //Speichere den neuen Node in einer Variable
+    const newNodes = [...nodes.concat(node)]; 
+    const newConceptMap = [{nodes: newNodes, links: conceptMap[0].links}]; //Konstruiere neue ConceptMap
+    setConceptMap(newConceptMap); //Aendere den Status auf die neue ConceptMap
     //handleConceptListRemove(item);
   }
 
