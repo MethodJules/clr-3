@@ -75,22 +75,23 @@ const App = () => {
   const [conceptMap, setConceptMap] = React.useState(initialConceptMap);
   const [allConcepts, setAllConcepts] = React.useState(initialAllConcepts);
 
+  //console.log('Start...');
+  //console.log(typeof conceptMap);
   /* Concept */
   const handleConceptAdd = (item) => {
     console.log('handleConceptAdd....');
+    //console.log(conceptMap);
     //console.log(item);
-    let newConcept = {
-        id: item.id,
-        conceptName: item.conceptName
-    };
 
-    //setConceptMap(conceptMap.concat(newConcept));
+    const nodes = conceptMap[0].nodes;
+    //console.log(typeof nodes);
+    const node = {id: item.id, conceptName: item.conceptName};
+    const newNodes = {...nodes.concat(node)};
+    //console.log(newNodes);
+    const newConceptMap = [{nodes: newNodes, links: conceptMap[0].links}];
 
-    console.log(conceptMap[0].nodes);
-    console.log(typeof conceptMap[0].nodes);
-    setConceptMap({nodes: {id: 10, conceptName: 'dddd'}});
-    console.log(conceptMap);
-    //setConceptMap(conceptMap[0].nodes.concat(newConcept));
+    console.log(newConceptMap);
+    //setConceptMap(newConceptMap);
     //setConceptMap(conceptMap.concat(newConcept)); //concat ist hier die Loesung statt array.push()
     //handleConceptListRemove(item);
   }
@@ -304,10 +305,14 @@ const CreateRelationshipForm = () => {
 
 
 const MyGraph = ({conceptMap}) => {
+  console.log('Graph...');
+  console.log(conceptMap);
   const data = {
     nodes: conceptMap[0].nodes,
     links: conceptMap[0].links,
-};
+  };
+
+  //console.log(data);
 
   // the graph configuration, you only need to pass down properties
   // that you want to override, otherwise default ones will be used
