@@ -68,6 +68,9 @@ const App = () => {
 
   /* Modal */
   const [show, setShow] = React.useState(false);
+  const [showLinkModal, setShowLinkModal] = React.useState(false);
+
+  const handleLinkClose = () => setShowLinkModal(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -82,23 +85,45 @@ const App = () => {
     console.log('handleConceptAdd....');
     const nodes = conceptMap[0].nodes; //Hole die Nodes aus der Concept Map
     const node = {id: item.id, conceptName: item.conceptName}; //Speichere den neuen Node in einer Variable
-    const newNodes = [...nodes.concat(node)]; 
+    const newNodes = [...nodes.concat(node)];
     const newConceptMap = [{nodes: newNodes, links: conceptMap[0].links}]; //Konstruiere neue ConceptMap
-    setConceptMap(newConceptMap); //Aendere den Status auf die neue ConceptMap
+    setShowLinkModal(true); //TODO: Modal für Links hier hinbauen
+    //setConceptMap(newConceptMap); //Aendere den Status auf die neue ConceptMap
     //handleConceptListRemove(item);
   }
 
   const handleConceptRemove = (item) => {
     console.log('Remove...');
     console.log(conceptMap);
-    const newConceptMap = conceptMap.filter(
+    console.log(item.id);
+
+    const nodeId = item.id; //Speichere die Node die geloescht werden soll in Variable
+    const newLinks = conceptMap[0].links; //Hole die Links aus der ConceptMap
+    const nodes = conceptMap[0].nodes;
+
+    //Loesche den Node
+    const newNodes = conceptMap[0].nodes.filter(
       concept => item.id !== concept.id
     );
 
-    setConceptMap(newConceptMap);
-    //console.log(conceptMap);
-    handleConceptListAdd(item);
+    const findLinks = (item, index) => {
+      console.log('Find items...');
+      console.log(item, index, nodeId);
+      if (item.source === nodeId) {
+        console.log(`Node ist mit ${nodeId} als Quelle verlinkt!`);
+      }
 
+      if(item.target === nodeId) {
+        console.log(`Node ist mit ${nodeId} als Ziel verlinkt! Der Index wert für diese Verbindung lautet: ${index}`);
+        newLinks.splice(index, 1); //Loesche Verknuepfung
+
+        //console.log(links);
+        const newConceptMap = [{nodes: newNodes, links: newLinks}];
+        setConceptMap(newConceptMap);
+      }
+    }
+
+    conceptMap[0].links.forEach((item, index) => findLinks(item, index));
   }
 
   const handleConceptListAdd = (item) => {
@@ -158,8 +183,9 @@ const App = () => {
           <Col xs={8} style={styleConceptMapContainer}>
           <MyGraph conceptMap={conceptMap}/>
 
-            {/* <ConceptMap concepts={conceptMap} onRemoveConcept={handleConceptRemove} isInConceptMap={true}/> */}
+            <ConceptMap concepts={conceptMap} onRemoveConcept={handleConceptRemove} isInConceptMap={true}/>
             <CreateConceptModal show={show} handleClose={handleClose} handleShow={handleShow} handleSaveConcept={handleSaveConcept}/>
+            <CreateLinkModal showLinkModal={showLinkModal} handleClose={handleLinkClose} handleShow={handleShow} />
           </Col>
           <Col>
             <Navigation />
@@ -199,7 +225,7 @@ const Concept = ({concept, onRemoveConcept, handleConceptAdd, isInConceptMap}) =
       <Button style={styleLittleButton} variant="secondary" onClick={() => onRemoveConcept(concept)}>Dismiss</Button>
         <span>{concept.conceptName}</span>
         {isInConceptMap ? <Button style={styleLittleButton} variant="secondary" onClick={() => onRemoveConcept(concept)}>Remove</Button>
-        : <Button style={styleLittleButton} variant="secondary" onClick={() => handleConceptAdd(concept)}>Add</Button>  }
+        : <Button style={styleLittleButton} variant="secondary" onClick={() => handleConceptAdd(concept)}>Add</Button>  } {/* TODO: Modal öffnen und Relation abfragen */}
 
     </div>
     );
@@ -221,13 +247,8 @@ const ConceptMap = ({concepts, onRemoveConcept, isInConceptMap}) => {
 }
 
 const CreateConceptModal = ({show, handleShow, handleClose, handleSaveConcept}) => {
-
-
-
   return (
-    <>
-
-
+    <div id="create-concept-modal">
       <Modal show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>Create Concept</Modal.Title>
@@ -242,7 +263,28 @@ const CreateConceptModal = ({show, handleShow, handleClose, handleSaveConcept}) 
           </Button>
         </Modal.Footer>
       </Modal>
-    </>
+    </div>
+  );
+}
+
+const CreateLinkModal = ({showLinkModal, handleShow, handleClose}) => {
+  return (
+    <div id="create-concept-modal">
+      <Modal show={showLinkModal} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Create Link</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>Hier kommt die Lnik Form hin</Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary">
+            Save Changes
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </div>
   );
 }
 
