@@ -18,23 +18,26 @@ const initialConceptMap = [
       nodes:[
         {
           id: 1,
-          conceptName: 'Concept 1',
+          conceptName: 'Concept Maps',
+          label: ''
         },
         {
           id: 2,
-          conceptName: 'Concept 2'
+          conceptName: 'Mental structure of long term memory',
+          label: ''
         },
         {
           id: 3,
-          conceptName: 'Concept 3'
+          conceptName: 'Relatedness structure',
+          label: ''
         }
       ],
       links: [
         {
-          source: 1, target: 2
+          source: 1, target: 2, type: "probe"
         },
         {
-          source: 1, target: 3
+          source: 1, target: 3, type: "which assumed to have"
         }
       ]
     }
@@ -54,7 +57,8 @@ const initialAllConcepts = [
       },
       {
         id: 6,
-        conceptName: 'Concept 6'
+        conceptName: 'Concept 6',
+        label: ''
       }
     ],
     links: [],
@@ -74,6 +78,7 @@ const App = () => {
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+
   /* Concept Map */
   const [conceptMap, setConceptMap] = React.useState(initialConceptMap);
   const [allConcepts, setAllConcepts] = React.useState(initialAllConcepts);
@@ -88,8 +93,6 @@ const App = () => {
     const newNodes = [...nodes.concat(node)];
     const newConceptMap = [{nodes: newNodes, links: conceptMap[0].links}]; //Konstruiere neue ConceptMap
     setShowLinkModal(true); //TODO: Modal für Links hier hinbauen
-    //setConceptMap(newConceptMap); //Aendere den Status auf die neue ConceptMap
-    //handleConceptListRemove(item);
   }
 
   const handleConceptRemove = (item) => {
@@ -175,7 +178,6 @@ const App = () => {
       <Container fluid>
         <Row style={style}>
           <Col>
-            <button type="button" onClick={handleConceptAdd}>Concept hinzufügen</button> {/*TODO: Methode anpassen */}
             <Button variant="primary" onClick={handleShow}>Create Concept</Button>
             <ConceptList concepts={allConcepts} onRemoveConcept={handleConceptListRemove} handleConceptAdd={handleConceptAdd} isInConceptMap={false} />
             <CreateRelationshipForm />
@@ -296,10 +298,9 @@ const CreateConceptForm = () => {
         <Form.Control type="text" placeholder="Enter concept name" />
       </Form.Group>
       <Form.Group controlId="formConceptDescription">
-        <Form.Label>Concept</Form.Label>
+        <Form.Label>Description</Form.Label>
         <Form.Control as="textarea" row="3" placeholder="Enter the description for the concept name" />
       </Form.Group>
-
 </Form>
   );
 }
@@ -352,14 +353,19 @@ const MyGraph = ({conceptMap}) => {
   // that you want to override, otherwise default ones will be used
   const myConfig = {
     nodeHighlightBehavior: true,
+    directed: true,
     node: {
-        color: "lightgreen",
+        color: "#dc3545",
         size: 600,
         highlightStrokeColor: "blue",
         labelProperty: "conceptName"
     },
     link: {
         highlightColor: "lightblue",
+        renderLabel: true,
+        labelProperty: "type",
+        markerHeight: 10,
+        markerWidth: 10,
     },
   };
   return(
